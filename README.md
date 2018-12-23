@@ -1,2 +1,2 @@
 # sampathbalivada.github.io
-GitHub Pages
+Personal Website
