@@ -1,0 +1,110 @@
+
+.header {
+    background: #fff;
+}
+
+.header-line {
+    margin-bottom: 0;
+}
+
+.content {
+    padding-top: 0px
+}
+
+.sticky-header {
+    position: fixed;
+    top: 0;
+}
+
+.desktop {
+    width: 100%;
+}
+
+.mobile {
+    width: 96%;
+}
+
+.sticky-content {
+    padding-top: 200px
+}
+
+.contribution-chart {
+    max-width: 100%;
+    width: auto;
+    height: auto;
+}
+
+.content-text {
+    font-size: 10px
+}
+
+.logo {
+    max-width: 300px;
+}
+
+.logo-title {
+    font-size: 13px;
+    padding: 4;
+}
+
+.sub-category {
+    font-size: 15px;
+    font-weight: bolder;
+}
+
+.icon {
+    width : 30px;
+    height : 30px;
+    padding : 8px
+}
+
+.content-icon {
+    width : 40px;
+    height : 40px;
+    padding : 8px
+}
+
+.list-item {
+    border: 1px;
+    border-style: solid;
+    border-color: black;
+    padding: 6px 2px 6px 2px;
+    border-radius: 4px;
+    display: inline;
+}
+
+li {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+ul {
+    padding: 0px
+}
+
+.card {
+    border-width: 1px;
+    border-style: solid;
+    border-color: black;
+    border-radius: 4px;
+    display: inline-block;
+    padding: 6px 2px 6px 2px;
+    width: 95%;
+    max-width: 400px;
+}
+
+.button {
+    background-color: white;
+    color: black;
+    border: black;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.button:hover {
+    background-color: black;
+    color: white;
+    border: white;
+    border-width: 1px;
+    border-style: solid;
+}
