@@ -64,15 +64,6 @@
     padding : 8px
 }
 
-.list-item {
-    border: 1px;
-    border-style: solid;
-    border-color: black;
-    padding: 6px 2px 6px 2px;
-    border-radius: 4px;
-    display: inline;
-}
-
 li {
     padding-top: 8px;
     padding-bottom: 8px;
@@ -86,9 +77,9 @@ ul {
     border-width: 1px;
     border-style: solid;
     border-color: black;
-    border-radius: 4px;
+    border-radius: 8px;
     display: inline-block;
-    padding: 6px 2px 6px 2px;
+    padding: 4px 2px 4px 2px;
     width: 95%;
     max-width: 400px;
 }

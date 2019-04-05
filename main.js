@@ -48,5 +48,6 @@ function myFunction() {
 var techStack = new Array("C", "C++", "Java", "Python", "Dart", "Flutter");
 
 for(var x=0; x<techStack.length; x++) {
-  $('#tech-table').append('<div align="center" style="display: table-cell"><img class="content-icon" src="assets/languages/'+ (x+1) +'.png"/><p>' + techStack[x] +'</p></div>');
+  techTable = document.getElementById("tech-table");
+  techTable.innerHTML += '<div align="center" style="display: table-cell"><img class="content-icon" src="assets/languages/'+ (x+1) +'.png"/><p>' + techStack[x] +'</p></div>';
 }
