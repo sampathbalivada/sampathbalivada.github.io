@@ -442,6 +442,10 @@ body{
     #blog p {
         margin:2vh 0px;
     }
+    
+.contribution-chart {
+    width: 100%;
+}
 }
 
 ::-webkit-scrollbar {width:5px;height:5px;}
