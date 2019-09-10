@@ -9,21 +9,21 @@ title: Blog
 		<div class="panel-body">
 			{% for post in site.posts %}
 			<a href="{{ site.url }}{{ post.url }}">
-				<div class="card" style="padding-top: 12px">
-					<div class="row">
-						<div class="col-sm-4 col-md-4 col-lg-4">
-							<h5 style="text-align: right">
-								{{ post.date | date: "%B %e, %Y" }}
-							</h5>
-						</div>
-						<div class="col-sm-8 col-md-8 col-lg-8">
-							<h5 style="text-align: left">
-								<strong>{{ post.title }}</strong>
-							</h5>
-						</div>
+			<div class="card" style="padding: 8px 8px 8px 8px">
+				<div class="row">
+					<div class="col-sm-4 col-md-4 col-lg-4">
+						<h5 style="text-align: center">
+							{{ post.date | date: "%B %e, %Y" }}
+						</h5>
 					</div>
-
+					<div class="col-sm-8 col-md-8 col-lg-8">
+						<h5 style="text-align: left">
+							<strong>{{ post.title }}</strong>
+						</h5>
+					</div>
 				</div>
+
+			</div>
 			</a>
 			{% endfor %}
 		</div>
