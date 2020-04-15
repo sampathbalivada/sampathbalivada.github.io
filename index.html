@@ -1,17 +1,164 @@
----
-layout: home
----
+<!DOCTYPE html>
+<html lang="en">
 
-<section id="about">
-	<div class="container">
-	  <div class="avatar">
-		<img class="img-circle" src="{{ site.url }}static/img/{{ site.avatar }}" alt="profile image" style="max-width: 50%">
-	  </div>
-	  <h3>I'm <strong>{{ site.author }}</strong>, a <a href="https://dscviit.tech">Developer Student Club</a> Lead.</h3>
-	  <h3>I'm a Developer by Definition</h3>
-	  <h3>Read my blog <a href="{{ site.baseurl }}blog.html">here</a>.</h3>
-	  <h3>Have a look at some of my working <a href="{{ site.baseurl }}projects.html"> projects</a>.</h3>
-	  <h3>Contact me at <a href="http://twitter.com/{{ site.twitter }}">@{{ site.twitter }}</a> or by <a href="mailto:{{ site.email }}">email</a>.</h3>
-	  {% include social.html %}
-	</div>
-</section>
+<head>
+    <!--  -->
+    <!-- This page was inspired by https://rlove.org -->
+    <!--  -->
+    <meta charset="utf-8" />
+    <title>Sampath Balivada</title>
+    <base href="/" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto" />
+    <link rel="stylesheet" type="text/css" href="sampath.css" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="canonical" href="https://sampath.dev" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1" />
+    <meta name="author" content="Sampath Balivada" />
+    <meta name="description"
+        content="Sampath Balivada is an aspiring engineer and a Reinforcement Learning enthusiast who lives in Visakhapatnam, IN" />
+    <meta name="keywords" content="Sampath Balivada,Linux,kernel,Reinforcement Learning,DSC,Visakhapatnam" />
+    <meta name="theme-color" content="#373737" />
+    <meta name="referrer" content="strict-origin" />
+    <meta property="og:title" content="Sampath Balivada" />
+    <meta property="og:site_name" content="Sampath Balivada" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://sampath.dev" />
+    <meta property="og:image" content="https://sampath.dev/sampath.jpg" />
+    <meta property="og:description"
+        content="Sampath Balivada is an aspiring engineer and a Reinforcement Learning enthusiast who lives in Visakhapatnam, IN" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@sampathbalivada" />
+    <meta name="twitter:title" content="Sampath Balivada" />
+    <meta name="twitter:image" content="https://sampath.dev/sampath.jpg" />
+    <meta name="twitter:image:alt" content="Sampath Balivada" />
+    <meta name="twitter:description"
+        content="Sampath Balivada is an aspiring engineer and a Reinforcement Learning enthusiast who lives in Visakhapatnam, IN" />
+</head>
+
+<body itemscope itemtype="https://schema.org/AboutPage">
+    <link itemprop="image" href="https://rlove.org/rlove.jpg" />
+    <main itemscope itemprop="mainEntity about" itemtype="https://schema.org/Person" itemid="https://sampath.dev">
+        <header>
+            <h1 itemprop="name">Sai Sampath Kumar Balivada</h1>
+            <meta itemprop="gender" content="male" />
+            <link itemprop="url" href="https://sampath.dev" />
+            <link itemprop="image" href="https://sampath.dev/sampath.jpg" />
+        </header>
+        <section>
+            <header>
+                <h2>Contact</h2>
+            </header>
+            <address>
+                <p>
+                    <a itemprop="email" href="https://mailhide.io/e/3Pyvi">Email</a>
+                    ·
+                    <a itemprop="sameAs" href="https://www.instagram.com/sampathbalivada/" rel="me">Instagram</a>
+                    ·
+                    <a itemprop="sameAs" href="https://www.linkedin.com/in/sampathbalivada" rel="me">LinkedIn</a>
+                    ·
+                    <a itemprop="sameAs" href="https://twitter.com/sampathbalivada" rel="me">Twitter</a>
+                </p>
+            </address>
+        </section>
+        <section>
+            <header>
+                <h2>About</h2>
+            </header>
+            <p>
+                I am an Ex
+                <a itemprop="url" href="https://g.dev/dsc">
+                    <span itemprop="name">Devloper Student Club</span>
+                </a>
+                lead aspiting to be a good engineer.
+            </p>
+            <p itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
+                I live in <span itemprop="addressLocality">Visakhapatnam</span>
+                .
+                <meta itemprop="addressCountry" content="IN" />
+            </p>
+        </section>
+        <section>
+            <header>
+                <h2>Blog</h2>
+            </header>
+            <p itemscope itemtype="https://schema.org/Blog">
+                <span itemprop="description">
+                    My thoughts on Computer Science, its offsprings and their defects can be found in my blog.
+                </span>
+                <span>
+                    It can be found
+                    <a href="blog">here.</a>
+                </span>
+                <link itemprop="author" href="https://sampath.dev" />
+            </p>
+        </section>
+        <section>
+            <header>
+                <h2>Research</h2>
+            </header>
+            <p itemscope itemtype="https://schema.org/Blog">
+                <span itemprop="description">
+                    My understanding and ideas on Reinforcement Learning and its effects on our future can be found in a dedicated page. 
+                </span>
+                <span>
+                    You can read it
+                    <a href="RL">here.</a>
+                </span>
+                <link itemprop="author" href="https://sampath.dev" />
+            </p>
+        </section>
+        <section>
+            <header>
+                <h2>Software</h2>
+            </header>
+            <p itemscope itemtype="https://schema.org/SoftwareApplication">
+                <meta itemprop="applicationCategory" content="tool" />
+                I use 
+                <a itemprop="url" href="https://flutter.dev">
+                    <span itemprop="name">Flutter</span>
+                </a>
+                to build apps.
+            </p>
+            <p itemscope itemtype="https://schema.org/SoftwareApplication">
+                <meta itemprop="applicationCategory" content="website" />
+                <span itemprop="description">
+                    My
+                    <a itemprop="url" href="https://github.com/sampathbalivada/google-sheets-url-shortener">
+                        <span itemprop="name operatingSystem">serverless custom url shortener</span>
+                    </a>
+                    uses Google Sheets to store and retrieve data.
+                </span>
+                <link itemprop="author" href="https://rlove.org" /> 
+            </p>
+            <p itemscope itemtype="https://schema.org/SoftwareApplication">
+                <meta itemprop="applicationCategory" content="app" />
+                <span itemprop="description">
+                    The
+                    <a itemprop="url" href="https://github.com/sampathbalivada/automatic-call-end-and-notifier">
+                        <span itemprop="name operatingSystem">auto call hanger</span>
+                    </a>
+                    ends a call and sends a pre-configured message to the caller without any user intervention.
+                </span>
+                <link itemprop="author" href="https://rlove.org" /> 
+            </p>
+            <p itemscope itemtype="https://schema.org/SoftwareSourceCode">
+                <span itemprop="codeRepository">
+                    More of my work can be found in my
+                    <a itemprop="url" href="https://github.com/sampathbalivada/automatic-call-end-and-notifier">
+                        <span itemprop="name operatingSystem">GitHub profile.</span>
+                    </a>
+                </span>
+                <link itemprop="author" href="https://rlove.org" /> 
+            </p>
+        </section>
+    </main>
+    <footer>
+        <small>
+            © <span itemprop="copyrightYear">2020</span>
+            <span itemprop="headline name">Sampath Balivada</span>
+        </small>
+    </footer>
+</body>
+
+</html>
