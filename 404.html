@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sampath Balivada</title>
+    <link rel="stylesheet" href="sampath.css">
+</head>
+
+<body>
+    <h1>Oops!</h1>
+    <span style="text-align: center;">
+        <p id="quote" style="font-style: italic; color: grey;"></p>
+        <p id="author" style="font-style: italic; color: grey;"></p>
+        <br> <br> <br>
+        <script>
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", "https://programming-quotes-api.herokuapp.com/quotes/random/lang/en");
+            xmlHttp.send();
+            xmlHttp.onreadystatechange = process;
+            function process(params) {
+                if(xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                    var response = JSON.parse(xmlHttp.responseText);
+                    console.log(response);
+                    document.getElementById('quote').innerHTML = response["en"];
+                    document.getElementById('author').innerHTML = "- " + response["author"];
+                }
+            }
+        </script>
+    </span>
+    <span style="text-align: center;">
+        <h3>
+            Seems like you're lost. You probably came looking for
+        </h3>
+        <a href="https://sampath.dev">
+            <h3>sampath.dev</h3>
+        </a>
+    </span>
+    <footer>
+        <small>
+            © <span itemprop="copyrightYear">2020</span>
+            <span itemprop="headline name">Sampath Balivada</span>
+        </small>
+    </footer>
+</body>
+
+</html>

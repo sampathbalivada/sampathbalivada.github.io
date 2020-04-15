@@ -154,6 +154,25 @@
         </section>
     </main>
     <footer>
+        <span style="text-align: center; padding-top: 1vh;">
+            <p id="quote" style="font-style: italic; color: grey;"></p>
+            <p id="author" style="font-style: italic; color: grey;"></p>
+            <br>
+            <script>
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.open("GET", "https://programming-quotes-api.herokuapp.com/quotes/random/lang/en");
+                xmlHttp.send();
+                xmlHttp.onreadystatechange = process;
+                function process(params) {
+                    if(xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                        var response = JSON.parse(xmlHttp.responseText);
+                        console.log(response);
+                        document.getElementById('quote').innerHTML = response["en"];
+                        document.getElementById('author').innerHTML = "- " + response["author"];
+                    }
+                }
+            </script>
+        </span>
         <small>
             © <span itemprop="copyrightYear">2020</span>
             <span itemprop="headline name">Sampath Balivada</span>
