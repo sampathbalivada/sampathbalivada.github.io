@@ -1,7 +1,3 @@
-<script>
-	export let name;
-</script>
-
 <main>
 	<h1>Landing Page Under Construction</h1>
 	<p>Visit <a href="https://blog.sampath.dev">blog.sampath.dev</a> in the mean time.</p>
