@@ -29,39 +29,37 @@
 </script>
 
 <div>
-    <p class="subtitle">latest blog posts:</p>
+    <h6 class="subtitle">latest blog posts:</h6>
     {#if posts.length == 0}
         {#each [1, 2, 3] as post}
-            <p>
+            <h6>
                 <a href="." target="." class="blog-post">loading...</a>
-            </p>
+            </h6>
         {/each}
     {:else}
         {#each posts.slice(0, 3) as post, i}
-            <p>
+            <h6>
                 <a
-                    href="https://sampath.dev/{post.slug}"
+                    href="https://blog.sampath.dev/{post.slug}"
                     target="_blank"
                     class="blog-post {i == 0 ? 'first' : ''}"
                     >> {post.title.toLowerCase()}</a
                 >
-            </p>
+            </h6>
         {/each}
     {/if}
 
-    <a href="https://blog.sampath.dev" target="_blank" class="blog-link">
-        view all blog posts
-    </a>
+    <h6>
+        <a href="https://blog.sampath.dev" target="_blank" class="blog-link">
+            view all blog posts
+        </a>
+    </h6>
 </div>
 
 <style>
     div {
         padding-left: 24px;
         border-left: 0.75px solid black;
-    }
-
-    p {
-        text-align: left;
     }
 
     a[target="_blank"]::after {
@@ -80,12 +78,10 @@
     }
 
     .subtitle {
-        font-size: 12px;
         font-weight: 300;
     }
 
     .blog-post {
-        font-size: 12px;
         font-weight: 300;
     }
 
@@ -94,7 +90,6 @@
     }
 
     .blog-link {
-        font-size: 12px;
         font-weight: 400;
     }
 

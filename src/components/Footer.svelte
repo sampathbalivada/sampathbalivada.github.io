@@ -13,10 +13,4 @@
         margin-bottom: 16px;        
         text-align: center;
     }
-
-    /* .footer {
-        width: 100%;
-        position: fixed;
-        bottom: 0px;
-    } */
 </style>

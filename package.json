@@ -5,8 +5,8 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "start": "sirv public --no-clear",
-    "deploy": "echo 'sampath.dev' > ./build/CNAME && node ./gh-pages.js"
+    "start": "sirv public --host",
+    "deploy": "echo 'sampath.dev' > ./public/build/CNAME && node ./gh-pages.js"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
