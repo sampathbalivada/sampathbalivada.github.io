@@ -1,26 +1,44 @@
+<script>
+	import Header from "./components/Header.svelte";
+	import Footer from "./components/Footer.svelte";
+	import Ikigai from "./components/Ikigai.svelte";
+	import Blog from "./components/Blog.svelte";
+</script>
+
 <main>
-	<h1>Landing Page Under Construction</h1>
-	<p>Visit <a href="https://blog.sampath.dev">blog.sampath.dev</a> in the mean time.</p>
+	<Header />
+	<span>
+		<div>
+			<Ikigai />
+		</div>
+		<div>
+			<Blog />
+		</div>
+	</span>
+	<Footer />
 </main>
 
 <style>
+	span {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	span > * {
+		flex: 1 1 0;
+	}
+
 	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
 	}
 
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
+	main > * {
+		flex: 1 1 0;
 	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
+	
 </style>
