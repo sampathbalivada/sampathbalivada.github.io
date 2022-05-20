@@ -626,7 +626,7 @@ var app = (function () {
     			h1.textContent = "sampath balivada";
     			t1 = space();
     			h60 = element("h6");
-    			h60.textContent = "Cloud Support Associate at Amazon Web Services";
+    			h60.textContent = "Software Engineer at PayPal";
     			t3 = space();
     			h61 = element("h6");
     			a0 = element("a");
@@ -643,15 +643,15 @@ var app = (function () {
     			add_location(h60, file$4, 2, 4, 55);
     			attr_dev(a0, "href", "https://twitter.com/sampathbalivada");
     			attr_dev(a0, "target", "_blank");
-    			add_location(a0, file$4, 4, 8, 128);
+    			add_location(a0, file$4, 4, 8, 109);
     			attr_dev(a1, "href", "https://linkedin.com/in/sampathbalivada");
     			attr_dev(a1, "target", "_blank");
-    			add_location(a1, file$4, 5, 8, 224);
+    			add_location(a1, file$4, 5, 8, 205);
     			attr_dev(a2, "href", "https://github.com/sampathbalivada");
     			attr_dev(a2, "target", "_blank");
-    			add_location(a2, file$4, 6, 8, 325);
+    			add_location(a2, file$4, 6, 8, 306);
     			attr_dev(h61, "class", "svelte-ocjpw0");
-    			add_location(h61, file$4, 3, 4, 115);
+    			add_location(h61, file$4, 3, 4, 96);
     			attr_dev(div, "class", "header svelte-ocjpw0");
     			add_location(div, file$4, 0, 0, 0);
     		},

@@ -1,6 +1,6 @@
 <div class="header">
     <h1>sampath balivada</h1>
-    <h6>Cloud Support Associate at Amazon Web Services</h6>
+    <h6>Software Engineer at PayPal</h6>
     <h6>
         <a href="https://twitter.com/sampathbalivada" target="_blank">twitter</a> &nbsp; &nbsp;
         <a href="https://linkedin.com/in/sampathbalivada" target="_blank">linkedin</a> &nbsp; &nbsp;
