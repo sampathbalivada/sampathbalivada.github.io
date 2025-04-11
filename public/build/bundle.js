@@ -79,6 +79,12 @@ var app = (function () {
         }
         return -1;
     }
+
+    const globals = (typeof window !== 'undefined'
+        ? window
+        : typeof globalThis !== 'undefined'
+            ? globalThis
+            : global);
     function append(target, node) {
         target.appendChild(node);
     }
@@ -86,7 +92,9 @@ var app = (function () {
         target.insertBefore(node, anchor || null);
     }
     function detach(node) {
-        node.parentNode.removeChild(node);
+        if (node.parentNode) {
+            node.parentNode.removeChild(node);
+        }
     }
     function destroy_each(iterations, detaching) {
         for (let i = 0; i < iterations.length; i += 1) {
@@ -116,11 +124,16 @@ var app = (function () {
         return Array.from(element.childNodes);
     }
     function set_style(node, key, value, important) {
-        node.style.setProperty(key, value, important ? 'important' : '');
+        if (value == null) {
+            node.style.removeProperty(key);
+        }
+        else {
+            node.style.setProperty(key, value, important ? 'important' : '');
+        }
     }
-    function custom_event(type, detail, bubbles = false) {
+    function custom_event(type, detail, { bubbles = false, cancelable = false } = {}) {
         const e = document.createEvent('CustomEvent');
-        e.initCustomEvent(type, bubbles, false, detail);
+        e.initCustomEvent(type, bubbles, cancelable, detail);
         return e;
     }
 
@@ -133,15 +146,24 @@ var app = (function () {
             throw new Error('Function called outside component initialization');
         return current_component;
     }
+    /**
+     * The `onMount` function schedules a callback to run as soon as the component has been mounted to the DOM.
+     * It must be called during the component's initialisation (but doesn't need to live *inside* the component;
+     * it can be called from an external module).
+     *
+     * `onMount` does not run inside a [server-side component](/docs#run-time-server-side-component-api).
+     *
+     * https://svelte.dev/docs#run-time-svelte-onmount
+     */
     function onMount(fn) {
         get_current_component().$$.on_mount.push(fn);
     }
 
     const dirty_components = [];
     const binding_callbacks = [];
-    const render_callbacks = [];
+    let render_callbacks = [];
     const flush_callbacks = [];
-    const resolved_promise = Promise.resolve();
+    const resolved_promise = /* @__PURE__ */ Promise.resolve();
     let update_scheduled = false;
     function schedule_update() {
         if (!update_scheduled) {
@@ -152,22 +174,54 @@ var app = (function () {
     function add_render_callback(fn) {
         render_callbacks.push(fn);
     }
-    let flushing = false;
+    // flush() calls callbacks in this order:
+    // 1. All beforeUpdate callbacks, in order: parents before children
+    // 2. All bind:this callbacks, in reverse order: children before parents.
+    // 3. All afterUpdate callbacks, in order: parents before children. EXCEPT
+    //    for afterUpdates called during the initial onMount, which are called in
+    //    reverse order: children before parents.
+    // Since callbacks might update component values, which could trigger another
+    // call to flush(), the following steps guard against this:
+    // 1. During beforeUpdate, any updated components will be added to the
+    //    dirty_components array and will cause a reentrant call to flush(). Because
+    //    the flush index is kept outside the function, the reentrant call will pick
+    //    up where the earlier call left off and go through all dirty components. The
+    //    current_component value is saved and restored so that the reentrant call will
+    //    not interfere with the "parent" flush() call.
+    // 2. bind:this callbacks cannot trigger new flush() calls.
+    // 3. During afterUpdate, any updated components will NOT have their afterUpdate
+    //    callback called a second time; the seen_callbacks set, outside the flush()
+    //    function, guarantees this behavior.
     const seen_callbacks = new Set();
+    let flushidx = 0; // Do *not* move this inside the flush() function
     function flush() {
-        if (flushing)
+        // Do not reenter flush while dirty components are updated, as this can
+        // result in an infinite loop. Instead, let the inner flush handle it.
+        // Reentrancy is ok afterwards for bindings etc.
+        if (flushidx !== 0) {
             return;
-        flushing = true;
+        }
+        const saved_component = current_component;
         do {
             // first, call beforeUpdate functions
             // and update components
-            for (let i = 0; i < dirty_components.length; i += 1) {
-                const component = dirty_components[i];
-                set_current_component(component);
-                update(component.$$);
+            try {
+                while (flushidx < dirty_components.length) {
+                    const component = dirty_components[flushidx];
+                    flushidx++;
+                    set_current_component(component);
+                    update(component.$$);
+                }
+            }
+            catch (e) {
+                // reset dirty state to not end up in a deadlocked state and then rethrow
+                dirty_components.length = 0;
+                flushidx = 0;
+                throw e;
             }
             set_current_component(null);
             dirty_components.length = 0;
+            flushidx = 0;
             while (binding_callbacks.length)
                 binding_callbacks.pop()();
             // then, once components are updated, call
@@ -187,8 +241,8 @@ var app = (function () {
             flush_callbacks.pop()();
         }
         update_scheduled = false;
-        flushing = false;
         seen_callbacks.clear();
+        set_current_component(saved_component);
     }
     function update($$) {
         if ($$.fragment !== null) {
@@ -199,6 +253,16 @@ var app = (function () {
             $$.fragment && $$.fragment.p($$.ctx, dirty);
             $$.after_update.forEach(add_render_callback);
         }
+    }
+    /**
+     * Useful for example to execute remaining `afterUpdate` callbacks before executing `destroy`.
+     */
+    function flush_render_callbacks(fns) {
+        const filtered = [];
+        const targets = [];
+        render_callbacks.forEach((c) => fns.indexOf(c) === -1 ? filtered.push(c) : targets.push(c));
+        targets.forEach((c) => c());
+        render_callbacks = filtered;
     }
     const outroing = new Set();
     let outros;
@@ -236,25 +300,25 @@ var app = (function () {
             });
             block.o(local);
         }
+        else if (callback) {
+            callback();
+        }
     }
-
-    const globals = (typeof window !== 'undefined'
-        ? window
-        : typeof globalThis !== 'undefined'
-            ? globalThis
-            : global);
     function create_component(block) {
         block && block.c();
     }
     function mount_component(component, target, anchor, customElement) {
-        const { fragment, on_mount, on_destroy, after_update } = component.$$;
+        const { fragment, after_update } = component.$$;
         fragment && fragment.m(target, anchor);
         if (!customElement) {
             // onMount happens before the initial afterUpdate
             add_render_callback(() => {
-                const new_on_destroy = on_mount.map(run).filter(is_function);
-                if (on_destroy) {
-                    on_destroy.push(...new_on_destroy);
+                const new_on_destroy = component.$$.on_mount.map(run).filter(is_function);
+                // if the component was destroyed immediately
+                // it will update the `$$.on_destroy` reference to `null`.
+                // the destructured on_destroy may still reference to the old array
+                if (component.$$.on_destroy) {
+                    component.$$.on_destroy.push(...new_on_destroy);
                 }
                 else {
                     // Edge case - component was destroyed immediately,
@@ -269,6 +333,7 @@ var app = (function () {
     function destroy_component(component, detaching) {
         const $$ = component.$$;
         if ($$.fragment !== null) {
+            flush_render_callbacks($$.after_update);
             run_all($$.on_destroy);
             $$.fragment && $$.fragment.d(detaching);
             // TODO null out other refs, including component.$$ (but need to
@@ -290,7 +355,7 @@ var app = (function () {
         set_current_component(component);
         const $$ = component.$$ = {
             fragment: null,
-            ctx: null,
+            ctx: [],
             // state
             props,
             update: noop,
@@ -355,6 +420,9 @@ var app = (function () {
             this.$destroy = noop;
         }
         $on(type, callback) {
+            if (!is_function(callback)) {
+                return noop;
+            }
             const callbacks = (this.$$.callbacks[type] || (this.$$.callbacks[type] = []));
             callbacks.push(callback);
             return () => {
@@ -373,7 +441,7 @@ var app = (function () {
     }
 
     function dispatch_dev(type, detail) {
-        document.dispatchEvent(custom_event(type, Object.assign({ version: '3.43.1' }, detail), true));
+        document.dispatchEvent(custom_event(type, Object.assign({ version: '3.59.2' }, detail), { bubbles: true }));
     }
     function append_dev(target, node) {
         dispatch_dev('SvelteDOMInsert', { target, node });
@@ -396,7 +464,7 @@ var app = (function () {
     }
     function set_data_dev(text, data) {
         data = '' + data;
-        if (text.wholeText === data)
+        if (text.data === data)
             return;
         dispatch_dev('SvelteDOMSetData', { node: text, data });
         text.data = data;
@@ -437,7 +505,7 @@ var app = (function () {
         $inject_state() { }
     }
 
-    /* src/MediaQuery.svelte generated by Svelte v3.43.1 */
+    /* src/MediaQuery.svelte generated by Svelte v3.59.2 */
     const get_default_slot_changes = dirty => ({ matches: dirty & /*matches*/ 1 });
     const get_default_slot_context = ctx => ({ matches: /*matches*/ ctx[0] });
 
@@ -531,6 +599,12 @@ var app = (function () {
     		}
     	}
 
+    	$$self.$$.on_mount.push(function () {
+    		if (query === undefined && !('query' in $$props || $$self.$$.bound[$$self.$$.props['query']])) {
+    			console.warn("<MediaQuery> was created without expected prop 'query'");
+    		}
+    	});
+
     	const writable_props = ['query'];
 
     	Object.keys($$props).forEach(key => {
@@ -590,13 +664,6 @@ var app = (function () {
     			options,
     			id: create_fragment$5.name
     		});
-
-    		const { ctx } = this.$$;
-    		const props = options.props || {};
-
-    		if (/*query*/ ctx[1] === undefined && !('query' in props)) {
-    			console.warn("<MediaQuery> was created without expected prop 'query'");
-    		}
     	}
 
     	get query() {
@@ -608,7 +675,7 @@ var app = (function () {
     	}
     }
 
-    /* src/components/Header.svelte generated by Svelte v3.43.1 */
+    /* src/components/Header.svelte generated by Svelte v3.59.2 */
 
     const file$4 = "src/components/Header.svelte";
 
@@ -722,7 +789,7 @@ var app = (function () {
     	}
     }
 
-    /* src/components/Footer.svelte generated by Svelte v3.43.1 */
+    /* src/components/Footer.svelte generated by Svelte v3.59.2 */
 
     const file$3 = "src/components/Footer.svelte";
 
@@ -816,7 +883,7 @@ var app = (function () {
     	}
     }
 
-    /* src/components/Ikigai.svelte generated by Svelte v3.43.1 */
+    /* src/components/Ikigai.svelte generated by Svelte v3.59.2 */
 
     const file$2 = "src/components/Ikigai.svelte";
 
@@ -885,6 +952,13 @@ var app = (function () {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('Ikigai', slots, []);
     	let { isMobile } = $$props;
+
+    	$$self.$$.on_mount.push(function () {
+    		if (isMobile === undefined && !('isMobile' in $$props || $$self.$$.bound[$$self.$$.props['isMobile']])) {
+    			console.warn("<Ikigai> was created without expected prop 'isMobile'");
+    		}
+    	});
+
     	const writable_props = ['isMobile'];
 
     	Object.keys($$props).forEach(key => {
@@ -919,13 +993,6 @@ var app = (function () {
     			options,
     			id: create_fragment$2.name
     		});
-
-    		const { ctx } = this.$$;
-    		const props = options.props || {};
-
-    		if (/*isMobile*/ ctx[0] === undefined && !('isMobile' in props)) {
-    			console.warn("<Ikigai> was created without expected prop 'isMobile'");
-    		}
     	}
 
     	get isMobile() {
@@ -937,7 +1004,7 @@ var app = (function () {
     	}
     }
 
-    /* src/components/Blog.svelte generated by Svelte v3.43.1 */
+    /* src/components/Blog.svelte generated by Svelte v3.59.2 */
 
     const { Error: Error_1, console: console_1 } = globals;
     const file$1 = "src/components/Blog.svelte";
@@ -976,7 +1043,9 @@ var app = (function () {
     		},
     		m: function mount(target, anchor) {
     			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].m(target, anchor);
+    				if (each_blocks[i]) {
+    					each_blocks[i].m(target, anchor);
+    				}
     			}
 
     			insert_dev(target, each_1_anchor, anchor);
@@ -1044,7 +1113,9 @@ var app = (function () {
     		},
     		m: function mount(target, anchor) {
     			for (let i = 0; i < 3; i += 1) {
-    				each_blocks[i].m(target, anchor);
+    				if (each_blocks[i]) {
+    					each_blocks[i].m(target, anchor);
+    				}
     			}
 
     			insert_dev(target, each_1_anchor, anchor);
@@ -1143,6 +1214,7 @@ var app = (function () {
     			append_dev(h6, a);
     			append_dev(h6, t1);
     		},
+    		p: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(h6);
     		}
@@ -1349,7 +1421,7 @@ var app = (function () {
     	}
     }
 
-    /* src/App.svelte generated by Svelte v3.43.1 */
+    /* src/App.svelte generated by Svelte v3.59.2 */
     const file = "src/App.svelte";
 
     // (12:1) {#if matches}
