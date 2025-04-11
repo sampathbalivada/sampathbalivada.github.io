@@ -1,31 +1,76 @@
 <script>
+    const publicationHost = "sampathbalivada.hashnode.dev"; 
     let posts = [];
-    fetch("https://api.hashnode.com/", {
-        method: "POST",
-
-        headers: {
-            "Content-Type": "application/json",
-        },
-
-        body: JSON.stringify({
-            query: `{
-                        user(username: "sampathbalivada") {
-                            publication {
-                                posts(page: 0) {
-                                    title
-                                    slug
-                                }
-                            }
-                        }
-                    }`,
-        }),
-    })
-        .then((res) => res.json())
-        .then((res) => {
-            posts = res.data.user.publication.posts;
-        });
-
     let x = 4;
+
+    const GQL_QUERY = `
+        query GetPublicationPosts($host: String!, $first: Int!) {
+            publication(host: $host) {
+                title
+                posts(first: $first) {
+                    edges {
+                        node {
+                            title
+                            slug
+                            brief
+                            url
+                        }
+                    }
+                    pageInfo {
+                         hasNextPage
+                         endCursor
+                    }
+                }
+            }
+        }
+    `;
+
+    async function fetchHashnodePosts() {
+        try {
+            const response = await fetch("https://gql.hashnode.com/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    query: GQL_QUERY,
+                    variables: { 
+                        host: publicationHost, 
+                        first: 10
+                    } 
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+
+            // Error handling for GraphQL errors
+            if (result.errors) {
+                console.error("GraphQL Errors:", result.errors);
+                throw new Error("Failed to fetch posts due to GraphQL errors.");
+            }
+            
+            // Check if publication and posts data exist
+            if (result.data && result.data.publication && result.data.publication.posts) {
+                // Extract the posts from the nested structure
+                posts = result.data.publication.posts.edges.map(edge => edge.node);
+                console.log("Fetched Posts:", posts); 
+            } else {
+                 console.warn("No publication or posts found for the given host:", publicationHost);
+                 posts = [];
+            }
+
+
+        } catch (error) {
+            console.error("Error fetching Hashnode posts:", error);
+        }
+    }
+    
+    fetchHashnodePosts();
+
 </script>
 
 <div>
